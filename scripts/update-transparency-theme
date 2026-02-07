@@ -1,0 +1,83 @@
+#!/usr/bin/env bash
+
+# Location of your active theme
+THEME="$HOME/.themes/Mint-Y-Rounded/cinnamon/cinnamon.css"
+WALCOLORS="$HOME/.cache/wal/colors.json"
+THEME_DIR="$HOME/.themes/Mint-Y-Rounded-Dynamic"
+
+
+# Get accent color (pywal's color4)
+ACCENT=$(jq -r '.colors.color4' "$WALCOLORS")
+
+# Get background and convert from hex to RGBA
+BG_HEX=$(jq -r '.special.background' "$WALCOLORS" | tr -d '#')
+r=$((16#${BG_HEX:0:2}))
+g=$((16#${BG_HEX:2:2}))
+b=$((16#${BG_HEX:4:2}))
+RGBA="rgba($r, $g, $b, 0.7)"
+
+# Clean previous injected blocks
+sed -i '/\/\* pywal accent override \*\//,/\/\* end pywal \*\//d' "$THEME"
+
+# Append new dynamic color settings
+cat <<EOF >> "$THEME"
+
+/* pywal accent override */
+.button:checked,
+.menu-item:active,
+.switch:checked,
+.toggle-switch:checked,
+.scale-highlight,
+.slider:active,
+.selected,
+.highlight,
+:focus,
+:checked {
+    background-color: $ACCENT !important;
+    border-color: $ACCENT !important;
+    color: #fff !important;
+}
+/* end pywal */
+
+/* pywal transparency injected */
+.panel {
+    background-color: $RGBA !important;
+    border: none;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+EOF
+
+# --- GTK override section ---
+for GTKCSS in "$THEME_DIR/gtk-3.0/gtk.css" "$THEME_DIR/gtk-4.0/gtk.css"; do
+  [[ -f "$GTKCSS" ]] || continue
+
+  # Backup once
+  [[ -f "$GTKCSS.bak" ]] || cp "$GTKCSS" "$GTKCSS.bak"
+
+  # Replace common Mint greens with pywal accent
+  for m in "#35a854" "#298141" "#2f954a" "#87cf3e" "green"; do
+    sed -i "s/${m}/${ACCENT}/Ig" "$GTKCSS"
+  done
+
+  # Inject override block for stubborn widgets
+  sed -i '/\/\* pywal gtk override \*\//,/\/\* end pywal gtk \*\//d' "$GTKCSS"
+
+  cat <<EOF >> "$GTKCSS"
+
+/* pywal gtk override */
+button:checked,
+button:hover,
+switch:checked,
+scale slider:hover,
+progressbar trough,
+progressbar progress,
+selection,
+listview:selected,
+entry:focus {
+  background-color: $ACCENT !important;
+  border-color: $ACCENT !important;
+  color: #fff !important;
+}
+/* end pywal gtk */
+EOF
+done
