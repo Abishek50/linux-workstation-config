@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+rofi -show combi \
+     -modes "combi,drun,run,window,file:~/.local/bin/rofi-files" \
+     -combi-modes "drun,run,window,file" \
+     -show-icons \
+     -display-combi "Search Everything: " \
+     -theme Arc-Dark
