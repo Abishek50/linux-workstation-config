@@ -21,3 +21,7 @@ Features:
 - Sends desktop notifications on completion
 
 The script is installed in ~/.local/bin to ensure availability in user PATH.
+
+### Screenshots
+![Main screen](screenshots/wallpaper_1.png)
+![Main screen](screenshots/wallpaper_2.png)
