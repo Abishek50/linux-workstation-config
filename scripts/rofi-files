@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+set -eu
+
+FD_BIN=$(command -v fd || command -v fdfind)
+
+case "${ROFI_RETV:-0}" in
+  0)
+    # First phase: print list of files (pattern '.' means match all)
+    "$FD_BIN" . --type f --max-depth 5 ~ 2>/dev/null
+    ;;
+  1)
+    # Second phase: open selected file
+    sel="${1:-}"
+    [ -n "$sel" ] && (gio open "$sel" >/dev/null 2>&1 &)
+    ;;
+esac
+
