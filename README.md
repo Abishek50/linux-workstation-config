@@ -22,11 +22,11 @@ Features:
 
 The script is installed in ~/.local/bin to ensure availability in user PATH.
 
-### Screenshots
-## Copy Absolute Path
+## Screenshots
+### Copy Absolute Path
 ![Main screen](screenshots/copy_path/copy_path_ss_1.png)
 ![Main screen](screenshots/copy_path/copy_path_ss_2.png)
 
-## Dynamic Theming
+### Dynamic Theming
 ![Main screen](screenshots/wallpaper/wallpaper_1.png)
 ![Main screen](screenshots/wallpaper/wallpaper_2.png)
